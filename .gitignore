@@ -1,0 +1,17 @@
+commit.txt
+scratch.hs
+TODO
+dist
+debug
+test
+tags
+TAGS
+Makefile.bak
+.*.ghci
+.*.vim
+*.log
+.*.sw*
+*.hi
+*.o
+*.dyn_hi
+*.dyn_o

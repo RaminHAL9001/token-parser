@@ -1,0 +1,92 @@
+name:          token-parser
+version:       0.1.0.0
+synopsis:      Like an Attoparsec parser but with polymorphic token state parameter for building tokenzing parsers.
+description:
+    .
+    This package provides the Data.TokenParser module, which is a parser
+    combinator similar to Attoparsec, but the parser data type contains stateful
+    type parameter 'token' which can be used to store a value of an arbitrary
+    token data type. Like Attoparsec, parsing can be performed by evaluting to a
+    'Result' continuation which can then be fed input line-by-line.
+    .
+    The 'ParserToken' class is also provided, which allows you to mark which
+    data type is the token used by the 'Parser'. This class provides the
+    'nextToken' function, which you must define in order to produce a token from
+    the input text stream and store it into the Parser's state.
+    .
+    The tokenizing Parser is divided into two monads, the 'Tokenizer' monad, and
+    the 'Parser' monad. The 'Tokenizer' monad provides combinators like
+    'string', 'char', 'satisfy', and 'takeWhile', which are used to produce a
+    single token, and are used to instantiate the 'nextToken' method. The token
+    is then stored in tbe state of the parser.
+    .
+    Then the 'Parser' monad, which wraps the 'Tokenizer' monad can be used to
+    define the full parser, which produces token value from the input text
+    stream, then evaluates any number of parser combinators which may backtrack
+    without modifying the token currently stored in the parser state. Only one
+    token may be stored at a time, and NO internal token stack is kept so
+    backtracking does not restore previously tokenized tokens.
+    .
+    For error handling, line and column numbers are kept, but it is the
+    responsibilty of the 'nextToken' instantiation to increment line and column
+    numbers. These features may be ignored to improve efficiency.
+    .
+    Another feature which you may use or not is a 'Data.Typeable.TypeRep' stack
+    internal to the Parser state. Parsers which make use of the 'typeableParser'
+    API will keep track of which data types are being parsed, and the stack is
+    returned when a parse error occurs. This requires all data types parsed
+    instantiate the Typeable class. Avoid using 'typeableParser' to improve
+    performance, or if you wish to use data types that do not instantiate
+    Typeable.
+	.
+    The Tokenizer monad also instantiats 'IsString', so using the
+    '-XOverloadedStrings' language extension allows you to use a string literal
+    as a 'string' parser when used in a Tokenizer monadic context.
+    .
+    Currently only 'Data.Text' input is provided. Plans for future releases
+    include a parser which is polymorphic over a stream datatype with
+    instantiations for lazy and strict Text and ByteString data types.
+    .
+
+homepage:      https://github.com/RaminHAL9001/token-parser
+license:       GPL-3
+license-file:  LICENSE
+author:        Ramin Honary
+maintainer:    ramin.honary@gmail.com
+category:      Text, Parser
+build-type:    Simple
+cabal-version: >=1.10
+
+
+library
+  exposed-modules:     
+    Data.TokenParser
+
+  extensions:    
+    DeriveDataTypeable
+    DeriveFunctor
+    GeneralizedNewtypeDeriving
+    TypeSynonymInstances
+    TypeFamilies
+    FlexibleContexts
+    FlexibleInstances
+    MultiParamTypeClasses
+    FunctionalDependencies
+    OverloadedStrings
+    ScopedTypeVariables
+    RankNTypes
+  
+  build-depends:
+    mtl >= 2.2.1,
+    semigroups >= 0.16.2.2,
+    text >= 1.2.0.6,
+    transformers >= 0.4.2.0,
+    vector >= 0.10.12.3,
+    base >= 4.7 && <4.9
+  
+  -- Directories containing source files.
+  hs-source-dirs:      src
+  
+  -- Base language which the package is written in.
+  default-language:    Haskell2010
+  
